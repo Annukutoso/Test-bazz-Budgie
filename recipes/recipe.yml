@@ -1,9 +1,9 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 # image will be published to ghcr.io/<user>/<name>
-name: Test-bazz-Budgie
+name: bazzite-budgie-test
 # description will be included in the image's metadata
-description: This is my personal OS image.
+description: This is my personal OS image changing the gnome from bazzite to budgie desktop
 
 # the base image to build on top of (FROM) and the version tag to use
 base-image: ghcr.io/ublue-os/bazzite-gnome
@@ -12,6 +12,23 @@ image-version: latest # You can pin to a specific version of Fedora as well
 # module configuration, executed in order
 # you can include multiple instances of the same module
 modules:
+ # 1. Remover a interface de usuário padrão do GNOME (mas mantendo o gerenciador GDM)
+  - type: rpm-ostree
+    remove:
+      - gnome-shell
+      - gnome-classic-session
+
+  # 2. Instalar o Budgie Desktop e as ferramentas essenciais
+  - type: rpm-ostree
+    install:
+      - budgie-desktop
+      - budgie-desktop-view
+      - budgie-control-center
+      - budgie-backgrounds # Opcional: Papéis de parede oficiais do Budgie
+
+  # 3. Gerenciamento de pacotes Flatpak iniciais (opcional)
+  - type: default-flatpaks
+    notify: true
   - type: files
     files:
       - source: system
